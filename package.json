@@ -1,14 +1,19 @@
 {
   "name": "ibt-stream",
   "version": "1.0.0",
-  "description": "",
+  "description": "Parse iRacing telemetry data using a stream",
   "main": "./dist/index.js",
   "scripts": {
     "build": "npx tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "iracing",
+    "telemetry",
+    "parse",
+    "stream"
+  ],
+  "author": "Schubert Cardozo",
   "license": "ISC",
   "devDependencies": {
     "@types/js-yaml": "^4.0.5",

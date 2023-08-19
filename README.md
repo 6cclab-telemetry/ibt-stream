@@ -49,7 +49,7 @@ fs.createReadStream('./telemetry.ibt')
 
 ```
 
-To parse a Telemtry file from an AWS S3 Bucket
+To parse a Telemetry file from an AWS S3 Bucket
 
 ```
 const s3 = new S3({ ...s3options });
