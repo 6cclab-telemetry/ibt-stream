@@ -8,7 +8,7 @@ interface IbtTransformOptions extends stream.TransformOptions {
   tickRate?: number;
 }
 
-class IbtStream extends stream.Transform {
+export class IbtStream extends stream.Transform {
   private bytesRead = 0;
   private buffers: Buffer[] = [];
   private sampleBuffer: Buffer | null = null;
