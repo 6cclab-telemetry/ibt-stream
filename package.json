@@ -1,11 +1,15 @@
 {
   "name": "ibt-stream",
   "version": "1.0.0",
+  "type": "module",
   "description": "Parse iRacing telemetry data using a stream",
   "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "npx tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "prepare": "npm run build",
+    "lint": "tslint -c tslint.json src/**/*.ts",
+    "prepublish": "npm run build"
   },
   "keywords": [
     "iracing",
@@ -13,16 +17,15 @@
     "parse",
     "stream"
   ],
+  "files": [
+    "dist"
+  ],
   "author": "Schubert Cardozo",
   "license": "ISC",
   "devDependencies": {
     "@types/js-yaml": "^4.0.5",
     "@types/node": "^18.11.9",
-    "@typescript-eslint/eslint-plugin": "^5.42.0",
-    "@typescript-eslint/parser": "^5.42.0",
-    "eslint": "^8.26.0",
-    "eslint-config-prettier": "^8.5.0",
-    "prettier": "^2.7.1",
+    "tslint": "^6.1.3",
     "typescript": "^4.8.4"
   },
   "dependencies": {

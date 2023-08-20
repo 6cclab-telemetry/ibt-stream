@@ -1,4 +1,4 @@
-import { IbtVarHeaders } from './ibt-var-headers';
+import { IbtVarHeaders } from "./ibt-var-headers";
 
 export class IbtSample {
   variableHeaders: IbtVarHeaders[];
@@ -10,15 +10,21 @@ export class IbtSample {
   }
 
   toObject = () => {
-    return this.variableHeaders.reduce((accum: Record<string, string>, header: IbtVarHeaders) => {
-      accum[header.data.name] = this.parseSample(this.buffer, header);
-      return accum;
-    }, {});
+    return this.variableHeaders.reduce(
+      (accum: Record<string, string>, header: IbtVarHeaders) => {
+        accum[header.data.name] = this.parseSample(this.buffer, header);
+        return accum;
+      },
+      {}
+    );
   };
 
   parseSample = (buffer: Buffer, header: IbtVarHeaders): any => {
     const headerType = header.data.type;
-    const slice = buffer.subarray(header.data.offset, header.data.offset + header.size());
+    const slice = buffer.subarray(
+      header.data.offset,
+      header.data.offset + header.size()
+    );
     switch (headerType) {
       case 0:
         return slice.toString();
@@ -39,7 +45,7 @@ export class IbtSample {
         return slice.readDoubleLE();
         break;
       default:
-        throw new Error('Unknown Header type');
+        throw new Error("Unknown Header type");
     }
   };
 }

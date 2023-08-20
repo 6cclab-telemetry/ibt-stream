@@ -1,8 +1,8 @@
-import * as stream from 'stream';
-import { IbtHeader } from './models/ibt-header';
-import { IbtVarHeaders } from './models/ibt-var-headers';
-import { IbtSessionInfo } from './models/ibt-session-info';
-import { IbtSample } from './models/ibt-sample';
+import * as stream from "stream";
+import { IbtHeader } from "./models/ibt-header";
+import { IbtVarHeaders } from "./models/ibt-var-headers";
+import { IbtSessionInfo } from "./models/ibt-session-info";
+import { IbtSample } from "./models/ibt-sample";
 
 interface IbtTransformOptions extends stream.TransformOptions {
   tickRate?: number;
@@ -33,7 +33,9 @@ class IbtStream extends stream.Transform {
     if (this.bytesRead >= endOfVarField) {
       const bytesLeft = endOfVarField - this.buffers.length;
       const value = parseInto.fromBuffer(
-        Buffer.concat(this.buffers.concat(chunk.subarray(0, bytesLeft))).subarray(offset, endOfVarField),
+        Buffer.concat(
+          this.buffers.concat(chunk.subarray(0, bytesLeft))
+        ).subarray(offset, endOfVarField),
         totalObjects
       );
       this.push({ type: parseInto.name, value });
@@ -51,7 +53,10 @@ class IbtStream extends stream.Transform {
       let cutoff = totalLength - remainder;
       for (let i = 0; i < cutoff; i += sampleLength) {
         let chunk = allData.subarray(i, i + sampleLength);
-        this.push({ type: IbtSample.name, value: new IbtSample(chunk, this.varHeaders!).toObject() });
+        this.push({
+          type: IbtSample.name,
+          value: new IbtSample(chunk, this.varHeaders!).toObject(),
+        });
         await new Promise((resolve) => {
           if (this.tickRate) {
             setTimeout(resolve, 1000 / this.tickRate);
@@ -62,15 +67,26 @@ class IbtStream extends stream.Transform {
       }
       this.sampleBuffer = allData.subarray(cutoff, totalLength);
     } else {
-      console.info('samples start', new Date());
+      console.info("samples start", new Date());
 
-      this.sampleBuffer = chunk.subarray(chunk.length - (this.bytesRead - this.header!.data.bufOffset));
+      this.sampleBuffer = chunk.subarray(
+        chunk.length - (this.bytesRead - this.header!.data.bufOffset)
+      );
     }
   };
 
-  _transform = async (chunk: Buffer, _: BufferEncoding, callback: stream.TransformCallback) => {
+  _transform = async (
+    chunk: Buffer,
+    _: BufferEncoding,
+    callback: stream.TransformCallback
+  ) => {
     this.bytesRead += chunk.length;
-    if (this.header === null) this.header = this.parseGeneric(chunk, IbtHeader, IbtHeader.byteSize) as IbtHeader;
+    if (this.header === null)
+      this.header = this.parseGeneric(
+        chunk,
+        IbtHeader,
+        IbtHeader.byteSize
+      ) as IbtHeader;
     if (this.header !== null && this.varHeaders === null)
       this.varHeaders = this.parseGeneric(
         chunk,
@@ -96,7 +112,7 @@ class IbtStream extends stream.Transform {
   };
 
   _flush = (callback: stream.TransformCallback): void => {
-    console.info('samples end', new Date());
+    console.info("samples end", new Date());
     callback();
   };
 }

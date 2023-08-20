@@ -1,4 +1,4 @@
-import { Parser } from 'binary-parser';
+import { Parser } from "binary-parser";
 
 export interface HeadverValues {
   type: number;
@@ -17,14 +17,17 @@ export class IbtVarHeaders {
 
   constructor(buffer: Buffer) {
     const parser = new Parser()
-      .int32le('type')
-      .int32le('offset')
-      .int32le('count')
-      .int8('countAsTime')
+      .int32le("type")
+      .int32le("offset")
+      .int32le("count")
+      .int8("countAsTime")
       .skip(3)
-      .string('name', { length: 32, formatter: (e) => e.replace(/\0/g, '') })
-      .string('description', { length: 64, formatter: (e) => e.replace(/\0/g, '') })
-      .string('unit', { length: 32, formatter: (e) => e.replace(/\0/g, '') });
+      .string("name", { length: 32, formatter: (e) => e.replace(/\0/g, "") })
+      .string("description", {
+        length: 64,
+        formatter: (e) => e.replace(/\0/g, ""),
+      })
+      .string("unit", { length: 32, formatter: (e) => e.replace(/\0/g, "") });
     this.data = parser.parse(buffer);
   }
 
