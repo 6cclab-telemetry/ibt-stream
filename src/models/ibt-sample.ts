@@ -11,7 +11,7 @@ export class IbtSample {
 
   toObject = () => {
     return this.variableHeaders.reduce(
-      (accum: Record<string, string>, header: IbtVarHeaders) => {
+      (accum: Record<string, string | number>, header: IbtVarHeaders) => {
         accum[header.data.name] = this.parseSample(this.buffer, header);
         return accum;
       },
@@ -19,7 +19,30 @@ export class IbtSample {
     );
   };
 
-  parseSample = (buffer: Buffer, header: IbtVarHeaders): any => {
+  getParam = (sampleVariableName: string) => {
+    const header = this.variableHeaders.find(
+      (h) => h.data.name.toLowerCase() === sampleVariableName.toLowerCase()
+    );
+
+    if (!header) {
+      return null;
+    }
+
+    const value = this.parseSample(this.buffer, header);
+
+    const { name, description, unit } = header.data;
+    return {
+      name,
+      description,
+      value: this.parseSample(this.buffer, header),
+      unit,
+    };
+  };
+
+  private parseSample = (
+    buffer: Buffer,
+    header: IbtVarHeaders
+  ): string | number => {
     const headerType = header.data.type;
     const slice = buffer.subarray(
       header.data.offset,

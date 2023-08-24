@@ -4,8 +4,15 @@ import { IbtVarHeaders } from "./models/ibt-var-headers";
 import { IbtSessionInfo } from "./models/ibt-session-info";
 import { IbtSample } from "./models/ibt-sample";
 
+export { IbtHeader, IbtSessionInfo, IbtSample, IbtVarHeaders };
+
 interface IbtTransformOptions extends stream.TransformOptions {
   tickRate?: number;
+}
+
+export interface IbtData {
+  type: string;
+  value: IbtHeader | IbtVarHeaders[] | IbtSessionInfo | IbtSample;
 }
 
 export class IbtStream extends stream.Transform {
@@ -55,8 +62,8 @@ export class IbtStream extends stream.Transform {
         let chunk = allData.subarray(i, i + sampleLength);
         this.push({
           type: IbtSample.name,
-          value: new IbtSample(chunk, this.varHeaders!).toObject(),
-        });
+          value: new IbtSample(chunk, this.varHeaders!),
+        } as IbtData);
         await new Promise((resolve) => {
           if (this.tickRate) {
             setTimeout(resolve, 1000 / this.tickRate);
