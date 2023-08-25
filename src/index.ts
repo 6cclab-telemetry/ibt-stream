@@ -1,10 +1,17 @@
 import * as stream from "stream";
 import { IbtHeader } from "./models/ibt-header";
+import { IbtDiskSubheader } from "./models/ibt-disk-subheader";
 import { IbtVarHeaders } from "./models/ibt-var-headers";
 import { IbtSessionInfo } from "./models/ibt-session-info";
 import { IbtSample } from "./models/ibt-sample";
 
-export { IbtHeader, IbtSessionInfo, IbtSample, IbtVarHeaders };
+export {
+  IbtHeader,
+  IbtDiskSubheader,
+  IbtSessionInfo,
+  IbtSample,
+  IbtVarHeaders,
+};
 
 interface IbtTransformOptions extends stream.TransformOptions {
   tickRate?: number;
@@ -12,7 +19,12 @@ interface IbtTransformOptions extends stream.TransformOptions {
 
 export interface IbtData {
   type: string;
-  value: IbtHeader | IbtVarHeaders[] | IbtSessionInfo | IbtSample;
+  value:
+    | IbtHeader
+    | IbtDiskSubheader
+    | IbtVarHeaders[]
+    | IbtSessionInfo
+    | IbtSample;
 }
 
 export class IbtStream extends stream.Transform {
@@ -20,6 +32,7 @@ export class IbtStream extends stream.Transform {
   private buffers: Buffer[] = [];
   private sampleBuffer: Buffer | null = null;
   private header: IbtHeader | null = null;
+  private diskSubheader: IbtDiskSubheader | null = null;
   private varHeaders: IbtVarHeaders[] | null = null;
   private sessionInfo: IbtSessionInfo | null = null;
   private tickRate: number | undefined;
@@ -31,11 +44,15 @@ export class IbtStream extends stream.Transform {
 
   private parseGeneric = (
     chunk: Buffer,
-    parseInto: typeof IbtHeader | typeof IbtVarHeaders | typeof IbtSessionInfo,
+    parseInto:
+      | typeof IbtHeader
+      | typeof IbtDiskSubheader
+      | typeof IbtVarHeaders
+      | typeof IbtSessionInfo,
     objectSize: number,
     offset = 0,
     totalObjects = 1
-  ): IbtHeader | IbtVarHeaders[] | IbtSessionInfo | null => {
+  ): IbtHeader | IbtDiskSubheader | IbtVarHeaders[] | IbtSessionInfo | null => {
     const endOfVarField = offset + objectSize * totalObjects;
     if (this.bytesRead >= endOfVarField) {
       const bytesLeft = endOfVarField - this.buffers.length;
@@ -94,6 +111,13 @@ export class IbtStream extends stream.Transform {
         IbtHeader,
         IbtHeader.byteSize
       ) as IbtHeader;
+    if (this.diskSubheader === null)
+      this.diskSubheader = this.parseGeneric(
+        chunk,
+        IbtDiskSubheader,
+        IbtDiskSubheader.byteSize,
+        IbtDiskSubheader.byteOffset
+      ) as IbtDiskSubheader;
     if (this.header !== null && this.varHeaders === null)
       this.varHeaders = this.parseGeneric(
         chunk,
