@@ -1,5 +1,5 @@
 {
-  "name": "ibt-stream",
+  "name": "6cclab-ibt-stream",
   "version": "1.0.0",
   "description": "Parse iRacing telemetry data using a stream",
   "main": "./dist/index.js",
@@ -8,8 +8,7 @@
     "dev": "tsx src/test.ts",
     "build": "tsc",
     "prepare": "pnpm build",
-    "lint": "tslint -c tslint.json src/**/*.ts",
-    "prepublish": "pnpm build"
+    "lint": "tslint -c tslint.json src/**/*.ts"
   },
   "keywords": [
     "iracing",
@@ -35,8 +34,5 @@
   "dependencies": {
     "binary-parser": "^2.2.1",
     "js-yaml": "^4.1.0"
-  },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/6cclab-telemetry"
   }
 }
