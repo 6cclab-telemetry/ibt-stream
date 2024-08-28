@@ -6,25 +6,7 @@ on:
       - main
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - name: 'Install Pnpm'
-        uses: pnpm/action-setup@v2
-        with:
-          version: '8.14'
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Build Package
-        run: pnpm build
-
   publish-gpr:
-    needs: build
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -38,6 +20,12 @@ jobs:
         uses: pnpm/action-setup@v2
         with:
           version: '8.14'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build Package
+        run: pnpm build
 
       - run: npm publish
         env:
