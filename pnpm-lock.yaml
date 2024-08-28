@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@irsdk-node/types':
+    specifier: ^3.0.0
+    version: 3.0.0
   binary-parser:
     specifier: ^2.2.1
     version: 2.2.1
@@ -269,6 +272,11 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@irsdk-node/types@3.0.0:
+    resolution: {integrity: sha512-A+3u0mPRNxYaJqKamA0c8hLkiR3cIkwANX190oXgLTxMw2AnF2QQJ5jTqoxSZXxysOr/iZFaVyxNciCPOyqWzw==}
+    engines: {node: '>=16'}
+    dev: false
 
   /@types/js-yaml@4.0.9:
     resolution: {integrity: sha512-k4MGaQl5TGo/iipqb2UDG2UwjXziSWkh0uysQelTlJpX1qGlpUZYm8PnO4DxG1qBomtJUdYJ6qR6xdIah10JLg==}
