@@ -17,6 +17,11 @@ jobs:
         uses: pnpm/action-setup@v2
         with:
           version: '8.14'
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build Package
+        run: pnpm build
 
   publish-gpr:
     needs: build
@@ -33,6 +38,7 @@ jobs:
         uses: pnpm/action-setup@v2
         with:
           version: '8.14'
+
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
